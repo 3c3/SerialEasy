@@ -22,10 +22,16 @@ namespace SerialEasy
         bool useSingleClass;
 
         byte[] header;
+        byte[] headerCheck;
+        int headerBytesRead = 0;
 
         public SerialManager(byte[] header, Type classType)
         {
-            this.header = header;
+            this.header = new byte[header.Length];
+            headerCheck = new byte[header.Length];
+
+            Buffer.BlockCopy(header, 0, this.header, 0, header.Length);
+
             singleClass = new ClassInfo(classType);
             useSingleClass = true;
         }
@@ -58,13 +64,20 @@ namespace SerialEasy
             return true;
         }
 
+        public void Stop()
+        {
+            serialThread.Abort();
+        }
+
         void Loop()
         {
             byte[] buff = new byte[1024];
             while (true)
             {
-                while (port.BytesToRead < header.Length) ;
-                port.Read(buff, 0, header.Length);
+                int headerBytesLeft = header.Length - headerBytesRead;
+                while (port.BytesToRead < headerBytesLeft) ;
+                port.Read(headerCheck, headerBytesRead, headerBytesLeft);
+
                 if (!CheckHeader(buff)) continue;
 
                 if (useSingleClass)
@@ -96,9 +109,23 @@ namespace SerialEasy
 
         bool CheckHeader(byte[] buff)
         {
+            bool kay = true;
             for (int i = 0; i < header.Length; i++)
-                if (header[i] != buff[i]) return false;
-            return true;
+                if (header[i] != headerCheck[i])
+                {
+                    kay = false;
+                    break;
+                }
+
+            if (!kay)
+            {
+                for (int i = 0; i < header.Length - 1; i++)
+                    headerCheck[i] = headerCheck[i + 1];
+                headerBytesRead = header.Length - 1;
+            }
+            else headerBytesRead = 0;
+
+            return kay;
         }
     }
 }

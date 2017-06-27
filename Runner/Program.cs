@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SerialEasy;
+using System.Threading;
 
 namespace Runner
 {
@@ -20,7 +21,9 @@ namespace Runner
                 if (serialMan.OpenPort(parts[0], int.Parse(parts[1]))) break;
             }
 
-            while (true) ;
+            Thread.Sleep(5000);
+
+            serialMan.Stop();
         }
 
         private static void SerialMan_SerialObjectReceived(object obj)
