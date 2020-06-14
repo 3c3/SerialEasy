@@ -47,6 +47,7 @@ namespace Runner
         // file dumpers
         volatile static StreamWriter rawDumper = null;
         volatile static StreamWriter calibDumper = null;
+        volatile static StreamWriter averageDumper = null;
 
         // lock for dumpers - they will be accessed from diff threads
         volatile static object dumpersLock = new object();
@@ -112,10 +113,12 @@ namespace Runner
             string filenameBase = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
             rawDumper = new StreamWriter(new FileStream(filenameBase + "_raw.csv", FileMode.Create), Encoding.ASCII, BUFFER_SIZE, false);
             calibDumper = new StreamWriter(new FileStream(filenameBase + "_calib.csv", FileMode.Create), Encoding.ASCII, BUFFER_SIZE, false);
+            averageDumper = new StreamWriter(new FileStream(filenameBase + "_avg.csv", FileMode.Create), Encoding.ASCII, BUFFER_SIZE, false);
 
             // write header lines
             rawDumper.WriteLine("timestamp;gyroX;gyroY;gyroZ;forceLeft;temp");
             calibDumper.WriteLine("timestamp;gyroX;gyroY;gyroZ;forceLeft;temp");
+            averageDumper.WriteLine("timestamp;power;rpm;Nm;sample_duration");
         }
 
         static void CloseDumpers()
@@ -127,12 +130,21 @@ namespace Runner
                 rawDumper.Dispose();
                 rawDumper = null;
             }
+
             if (calibDumper != null)
             {
                 calibDumper.Flush();
                 calibDumper.Close();
                 calibDumper.Dispose();
                 calibDumper = null;
+            }
+
+            if (averageDumper != null)
+            {
+                averageDumper.Flush();
+                averageDumper.Close();
+                averageDumper.Dispose();
+                averageDumper = null;
             }
         }
 
@@ -355,6 +367,11 @@ namespace Runner
                 {
                     calibDumper.WriteLine(string.Format("{0};{1};{2};{3};{4};{5}", dataPoint.timestampUs, dataPoint.angularVelocityX, dataPoint.angularVelocityY,
                                                                                    dataPoint.angularVelocityZ, dataPoint.forceLeft, dataPoint.temperature));
+                }
+
+                if (ok && averageDumper != null)
+                {
+                    averageDumper.WriteLine(string.Format("{0};{1};{2};{3};{4}", revolutionStats.timestamp, revolutionStats.power, revolutionStats.rpm, revolutionStats.torque, revolutionStats.duration));
                 }
             }
         }
