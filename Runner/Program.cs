@@ -82,7 +82,8 @@ namespace Runner
                     builder.AppendLine(mean.ToString());
                     builder.AppendLine(stdDev.ToString());
 
-                    File.WriteAllText("meanStDev.txt", builder.ToString());
+                    string filenameBase = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                    File.WriteAllText(filenameBase + "_meanStDev.txt", builder.ToString());
                 }
                 else if (parts[0] == "rec")
                 {
