@@ -33,20 +33,20 @@ namespace SerialEasy
             {
                 if (bfi.size == 1)
                 {
-                    num = new sbyte();
                     num = (sbyte)buff[start];
                 }
                 else if (bfi.size == 2)
                 {
-                    num = new short();
-
                     if (bfi.msbFirst) num = (short)(buff[start] << 8 | buff[start + 1]);
                     else num = (short)(buff[start + 1] << 8 | buff[start]);
                 }
+                else if (bfi.size == 3)
+                {
+                    if (bfi.msbFirst) num = (buff[start] >= 128 ? 255 : 0) << 24 | buff[start] << 16 | buff[start + 1] << 8 | buff[start + 2];
+                    else num = (buff[start + 2] >= 128 ? 255 : 0) << 24 | buff[start + 2] << 16 | buff[start + 1] << 8 | buff[start];
+                }
                 else if (bfi.size == 4)
                 {
-                    num = new int();
-
                     if (bfi.msbFirst) num = buff[start] << 24 | buff[start + 1] << 16 | buff[start + 2] << 8 | buff[start + 3];
                     else num = buff[start + 3] << 24 | buff[start + 2] << 16 | buff[start + 1] << 8 | buff[start];
                 }
@@ -55,20 +55,20 @@ namespace SerialEasy
             {
                 if (bfi.size == 1)
                 {
-                    num = new byte();
                     num = buff[start];
                 }
                 else if (bfi.size == 2)
                 {
-                    num = new short();
-
                     if (bfi.msbFirst) num = (ushort)(buff[start] << 8 | buff[start + 1]);
                     else num = (ushort)(buff[start + 1] << 8 | buff[start]);
                 }
+                else if (bfi.size == 3)
+                {
+                    if (bfi.msbFirst) num = buff[start] << 16 | buff[start + 1] << 8 | buff[start + 2];
+                    else num = buff[start + 2] << 16 | buff[start + 1] << 8 | buff[start];
+                }
                 else if (bfi.size == 4)
                 {
-                    num = new uint();
-
                     if (bfi.msbFirst) num = (uint)(buff[start] << 24 | buff[start + 1] << 16 | buff[start + 2] << 8 | buff[start + 3]);
                     else num = (uint)(buff[start + 3] << 24 | buff[start + 2] << 16 | buff[start + 1] << 8 | buff[start]);
                 }

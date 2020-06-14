@@ -38,7 +38,10 @@ namespace SerialEasy
 
         public SerialManager(byte[] header)
         {
-            this.header = header;
+            this.header = new byte[header.Length];
+            headerCheck = new byte[header.Length];
+
+            Buffer.BlockCopy(header, 0, this.header, 0, header.Length);
         }
 
         public void AddClass(int id, Type classType)
