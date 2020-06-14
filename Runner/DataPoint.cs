@@ -35,5 +35,30 @@ namespace Runner
             return String.Format("{0:0.000}\t{1:0.00}\t{2:0.00}\t{3:0.00}\t{4:0.00}\t{5:0.00}", timestampUs / 1000000.0, angularVelocityX * RAD_TO_DEG, angularVelocityY * RAD_TO_DEG, angularVelocityZ * RAD_TO_DEG,
                                   temperature, forceLeft); 
         }
+
+        public string ToCsvLine()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            
+            double timeSeconds = timestampUs / 1000000.0;
+            stringBuilder.Append(timeSeconds.ToString("0.0000", System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(",");
+
+            stringBuilder.Append(angularVelocityX.ToString("0.0000", System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(",");
+
+            stringBuilder.Append(angularVelocityY.ToString("0.0000", System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(",");
+
+            stringBuilder.Append(angularVelocityZ.ToString("0.0000", System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(",");
+
+            stringBuilder.Append(forceLeft.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(",");
+
+            stringBuilder.Append(temperature.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+
+            return stringBuilder.ToString();
+        }
     }
 }

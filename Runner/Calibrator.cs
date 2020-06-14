@@ -8,24 +8,24 @@ namespace Runner
 {
     public class Calibrator
     {
-        private static uint F_CPU = 8000000;
-        private static uint PRESCALER = 1024;
-        private static uint US_PER_TICK = PRESCALER * 1000000 / F_CPU;
+        private static readonly uint F_CPU = 8000000;
+        private static readonly uint PRESCALER = 1024;
+        private static readonly uint US_PER_TICK = PRESCALER * 1000000 / F_CPU;
 
-        private static int GYRO_OFFSET_X = -128;
-        private static int GYRO_OFFSET_Y = 17;
-        private static int GYRO_OFFSET_Z = 292;
-        private static int GYRO_RANGE_DEG = 2000;
-        private static double GYRO_DEG_CONST = (double)GYRO_RANGE_DEG / ((1 << 16) - 1);
+        private static readonly int GYRO_OFFSET_X = -128;
+        private static readonly int GYRO_OFFSET_Y = 17;
+        private static readonly int GYRO_OFFSET_Z = 292;
+        private static readonly int GYRO_RANGE_DEG = 2000;
+        private static readonly double GYRO_DEG_CONST = (double)GYRO_RANGE_DEG / ((1 << 15) - 1);
 
-        private static int FORCE_LEFT_OFFSET = 356235;
+        private static readonly int FORCE_LEFT_OFFSET = 356235;
 
         // conversion constant to newtons
-        private static double FORCE_LEFT_CONSTANT = 5.0 / (393280 - FORCE_LEFT_OFFSET);
+        private static readonly double FORCE_LEFT_CONSTANT = 5.0 / (393280 - FORCE_LEFT_OFFSET);
 
         // temperature
-        private static int TEMPERATURE_OFFSET = -12420;
-        private static double TEMPERATURE_SCALE = 1.0 / 340;
+        private static readonly int TEMPERATURE_OFFSET = -12420;
+        private static readonly double TEMPERATURE_SCALE = 1.0 / 340;
 
         private ulong previuosTimestampUs = 0;
         private int previousTimestampTick = -1;
